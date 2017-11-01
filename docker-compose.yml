@@ -1,0 +1,24 @@
+version: '2'
+services:
+    gitlab:
+        image: 'gitlab/gitlab-ce:latest'
+        restart: always
+        hostname: 'gitlab'
+        environment:
+            GITLAB_OMNIBUS_CONFIG: |
+                external_url 'http://gitlab:9090'
+                gitlab_rails['gitlab_shell_ssh_port'] = 2224
+        ports:
+            - '9090:9090'
+            - '2224:22'
+        volumes:
+            - '/srv/gitlab/config:/home/anu/gitlab/etc/gitlab'
+            - '/srv/gitlab/logs:/home/anu/gitlab/var/log/gitlab'
+            - '/srv/gitlab/data:/home/anu/gitlab/var/opt/gitlab'
+
+    runner:
+        image: 'gitlab/gitlab-runner:latest'
+        restart: always
+        volumes:
+            - '/srv/gitlab-runner/config:/etc/gitlab-runner'
+            - '/var/run/docker.sock:/var/run/docker.sock'
